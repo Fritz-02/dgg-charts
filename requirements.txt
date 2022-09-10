@@ -1,0 +1,4 @@
+dgg-bot
+pandas
+matplotlib
+numpy

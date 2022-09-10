@@ -1,0 +1,9 @@
+{
+  "chart": {
+    "viewer_velocity": true,
+    "viewer_acceleration": false,
+    "message_count": true,
+    "lwod": true,
+    "pct_change": false
+  }
+}
