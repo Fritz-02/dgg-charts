@@ -12,11 +12,15 @@ This a project that collects and displays various data from [Destiny's](https://
 livestreams onto a chart. Data used is from destiny.gg (livestream information), and "Last Month on Destiny" (LWOD, timestamps of things that occur during streams) 
 spreadsheets by cantclosevim.
 
+## Example Charts
+
+![Chart, 8 Sept 2022](https://i.imgur.com/T8z6YCE.png)
+
 ## More Stuff
 
 ### LWOD Links
 
-Links to LWOD spreadsheets since September 2022.
+Links to LWOD spreadsheets created by cantclosevim since September 2022.
 
 - [September 2022](https://docs.google.com/spreadsheets/d/1vkx2vxMiNkoqRXRfWrZJms_k7-toLWXxHIE2MJJPv5Y/edit?usp=sharing)
 
