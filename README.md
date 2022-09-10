@@ -12,6 +12,23 @@ This a project that collects and displays various data from [Destiny's](https://
 livestreams onto a chart. Data used is from destiny.gg (livestream information), and "Last Month on Destiny" (LWOD, timestamps of things that occur during streams) 
 spreadsheets by cantclosevim.
 
+## Usage
+
+Run this is collect data:
+```sh
+python collect_data.py
+```
+
+Run this to display chart for the specified date (in YY-MM-DD format, optional, defaults to date in config.json):
+```sh
+python chart.py 22-09-09
+```
+
+Run this to clean up a csv file (so far only works on chat.csv, and removes data from offline chat)
+```sh
+python clean_csv.py ./data/22-09-09/chat.csv
+```
+
 ## Example Charts
 
 ![Chart, 8 Sept 2022](https://i.imgur.com/T8z6YCE.png)
