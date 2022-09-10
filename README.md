@@ -33,6 +33,10 @@ python clean_csv.py ./data/22-09-09/chat.csv
 
 ![Chart, 8 Sept 2022](https://i.imgur.com/T8z6YCE.png)
 
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
 ## More Stuff
 
 ### LWOD Links
@@ -40,6 +44,8 @@ python clean_csv.py ./data/22-09-09/chat.csv
 Links to LWOD spreadsheets created by cantclosevim since September 2022.
 
 - [September 2022](https://docs.google.com/spreadsheets/d/1vkx2vxMiNkoqRXRfWrZJms_k7-toLWXxHIE2MJJPv5Y/edit?usp=sharing)
+
+
 
 
 [contributors-shield]: https://img.shields.io/github/contributors/Fritz-02/dgg-charts.svg?style=for-the-badge
