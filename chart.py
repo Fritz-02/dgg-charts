@@ -45,7 +45,7 @@ handles = [p1]
 
 axs[0].set_xlim(0, df["duration"].max())
 axs[0].set_ylim(df["viewers"].min(), df["viewers"].max())
-axs[0].set_xlabel("Duration (s)")
+axs[0].set_xlabel("Timestamp (HH:MM)")
 axs[0].set_ylabel("Viewers")
 
 axs[0].yaxis.label.set_color(p1.get_color())
@@ -169,7 +169,7 @@ if config["chart"]["message_count"]:
 
     axs[1].set_xlim(0, df["duration"].max())
     axs[1].set_ylim(0, df["msg_count"].max())
-    axs[1].set_xlabel("Duration (s)")
+    axs[1].set_xlabel("Timestamp (HH:MM)")
     axs[1].set_ylabel("Messages/minute")
 
     axs[1].yaxis.label.set_color(p20.get_color())
