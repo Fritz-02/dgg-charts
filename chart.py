@@ -2,19 +2,23 @@ import json
 import matplotlib.pyplot as plt
 import matplotlib.dates as dates
 import pandas as pd
+import sys
 import webbrowser
 
 with open("config.json") as f:
     config = json.load(f)
 
+if len(sys.argv) > 1:
+    date = sys.argv[1]
+else:
+    date = config["chart"]["date"]
 
-date = "22-09-09"
 df = pd.read_csv(f"data/{date}/stream.csv")
-df.drop_duplicates(subset='duration', keep="first", inplace=True)
+df.drop_duplicates(subset="duration", keep="first", inplace=True)
 df["minute"] = ((df["started_at"] + df["duration"]) / 60).astype("int32")
 chat_df = pd.read_csv(f"data/{date}/chat.csv")[1:-1]
 
-df = pd.merge(df, chat_df, on='minute', how='outer')
+df = pd.merge(df, chat_df, on="minute", how="outer")
 df["sma5_msg_count"] = df["msg_count"].rolling(5).mean()
 
 df["viewer_diff"] = df["viewers"].diff()
@@ -29,12 +33,14 @@ df["duration_s"] = df["duration"]
 df["duration"] = df["duration"].apply(pd.to_datetime, unit="s")
 
 # plotting
-plt.style.use('seaborn-dark')
-fig, axs = plt.subplots(2 if config["chart"]["message_count"] else 1, gridspec_kw={'height_ratios': [5, 1]})
+plt.style.use("seaborn-dark")
+fig, axs = plt.subplots(
+    2 if config["chart"]["message_count"] else 1, gridspec_kw={"height_ratios": [5, 1]}
+)
 
 fig.subplots_adjust(right=0.75)
 
-p1, = axs[0].plot(df["duration"], df["viewers"], "b-", label="Viewers")
+(p1,) = axs[0].plot(df["duration"], df["viewers"], "b-", label="Viewers")
 handles = [p1]
 
 axs[0].set_xlim(0, df["duration"].max())
@@ -45,10 +51,10 @@ axs[0].set_ylabel("Viewers")
 axs[0].yaxis.label.set_color(p1.get_color())
 
 tkw = dict(size=4, width=1.5)
-axs[0].tick_params(axis='y', colors=p1.get_color(), **tkw)
-axs[0].tick_params(axis='x', **tkw)
+axs[0].tick_params(axis="y", colors=p1.get_color(), **tkw)
+axs[0].tick_params(axis="x", **tkw)
 # axs[0].set_xticks(np.arange(0, df["duration"].max() + 1, 1800.0))
-axs[0].xaxis.set_major_formatter(dates.DateFormatter('%H:%M'))
+axs[0].xaxis.set_major_formatter(dates.DateFormatter("%H:%M"))
 minlocator = dates.MinuteLocator(byminute=[0, 15, 30, 45])
 # minlocator = dates.MinuteLocator(byminute=[0, 10, 20, 30, 40, 50])
 # axs[0].xaxis.set_major_locator(minlocator)
@@ -58,33 +64,40 @@ def on_dblclick(event):
     """Double-clicking on the chart will open the VOD at the clicked specific time."""
     if event.dblclick and event.xdata is not None:
         ts = int(event.xdata * 86400)
-        video_id = df.iloc[(df['duration_s'] - ts).abs().argsort()[0]]["video_id"]
+        video_id = df.iloc[(df["duration_s"] - ts).abs().argsort()[0]]["video_id"]
         webbrowser.open(f"https://youtu.be/{video_id}?t={ts}")
 
 
 cid = fig.canvas.mpl_connect("button_press_event", on_dblclick)
 
 
-def make_plot(y, marker, label: str, ylim: tuple, spine_position: float = 1, axhline: int = None, *, axis_label: bool = True,
-              ax: int = 0, add_handle: bool = True):
+def make_plot(
+    y,
+    marker,
+    label: str,
+    ylim: tuple,
+    spine_position: float = 1,
+    axhline: int = None,
+    *,
+    axis_label: bool = True,
+    ax: int = 0,
+    add_handle: bool = True,
+):
     twinx = axs[ax].twinx()
     twinx.spines.right.set_position(("axes", spine_position))
-    p, = twinx.plot(df["duration"], y, marker, label=label)
+    (p,) = twinx.plot(df["duration"], y, marker, label=label)
     twinx.set_ylim(*ylim)
     twinx.set_ylabel(label)
     if axis_label:
         twinx.yaxis.label.set_color(p.get_color())
     else:
-        twinx.axis('off')
-    twinx.tick_params(axis='y', colors=p.get_color(), **tkw)
+        twinx.axis("off")
+    twinx.tick_params(axis="y", colors=p.get_color(), **tkw)
     if add_handle:
         handles.append(p)
     if axhline is not None:
         twinx.axhline(axhline)
     return p
-
-
-
 
 
 if config["chart"]["pct_change"]:
@@ -95,7 +108,7 @@ if config["chart"]["pct_change"]:
         y2=0,
         where=(df["viewer_change"] <= -2),
         facecolor="lightcoral",
-        alpha=0.5
+        alpha=0.5,
     )
 
 
@@ -108,8 +121,14 @@ if config["chart"]["viewer_velocity"]:
 
     # make_plot(df["sma15_viewer_vel"], "r--", "Viewers/minute (SMA15)", (-vel_lim, vel_lim), axis_label=False)
     # make_plot(df["ema15_viewer_vel"], "r-", "Viewers/minute (EMA15)", (-vel_lim, vel_lim), axis_label=False)
-    make_plot(df["ema15_viewer_vel"], "r-", "Viewers/minute (EMA15)", (-vel_lim, vel_lim), 1.0, axhline=0)
-
+    make_plot(
+        df["ema15_viewer_vel"],
+        "r-",
+        "Viewers/minute (EMA15)",
+        (-vel_lim, vel_lim),
+        1.0,
+        axhline=0,
+    )
 
     # ax.fill_between(range(len(df)), min(df), max(df), where=(df["viewer_vel"] < 0), alpha=0.5)
     # axs[0].fill_between(
@@ -146,7 +165,7 @@ if config["chart"]["viewer_acceleration"]:
     # handles.append(p3)
 
 if config["chart"]["message_count"]:
-    p20, = axs[1].plot(df["duration"], df["msg_count"], "y-", label="Messages/minute")
+    (p20,) = axs[1].plot(df["duration"], df["msg_count"], "y-", label="Messages/minute")
 
     axs[1].set_xlim(0, df["duration"].max())
     axs[1].set_ylim(0, df["msg_count"].max())
@@ -156,15 +175,22 @@ if config["chart"]["message_count"]:
     axs[1].yaxis.label.set_color(p20.get_color())
 
     # tkw = dict(size=4, width=1.5)
-    axs[1].tick_params(axis='y', colors=p20.get_color(), **tkw)
-    axs[1].tick_params(axis='x', **tkw)
-    axs[1].xaxis.set_major_formatter(dates.DateFormatter('%H:%M'))
+    axs[1].tick_params(axis="y", colors=p20.get_color(), **tkw)
+    axs[1].tick_params(axis="x", **tkw)
+    axs[1].xaxis.set_major_formatter(dates.DateFormatter("%H:%M"))
     axs[1].xaxis.set_major_locator(minlocator)
 
     # axs[1].set_xticks(np.arange(0, df["duration"].max() + 1, 1800.0))
 
-    p21 = make_plot(df["sma5_msg_count"], "k--", "Messages/minute (SMA5)", (0, df["msg_count"].max()), axis_label=False,
-                    ax=1, add_handle=False)
+    p21 = make_plot(
+        df["sma5_msg_count"],
+        "k--",
+        "Messages/minute (SMA5)",
+        (0, df["msg_count"].max()),
+        axis_label=False,
+        ax=1,
+        add_handle=False,
+    )
 
     axs[1].legend(handles=[p20, p21])
 
@@ -177,11 +203,7 @@ def convert_time(s: str) -> int:
 def add_text(r: pd.Series):
     print(type(r))
     center = pd.Timedelta(r.end_ts - r.start_ts)
-    axs[0].text(
-        r.start_ts + center / 2, df["viewers"].min() + 50,
-        r.topic,
-        rotation=90
-    )
+    axs[0].text(r.start_ts + center / 2, df["viewers"].min() + 50, r.topic, rotation=90)
 
 
 def add_axvspan(r, color: str, alpha: float = 0.5):
@@ -192,8 +214,12 @@ def add_axvspan(r, color: str, alpha: float = 0.5):
 if config["chart"]["lwod"]:
     # read times from csv
     lwod_df = pd.read_csv(f"data/{date}/lwod.csv")
-    lwod_df["start_ts"] = lwod_df["start"].apply(convert_time).apply(pd.to_datetime, unit="s")
-    lwod_df["end_ts"] = lwod_df["end"].apply(convert_time).apply(pd.to_datetime, unit="s")
+    lwod_df["start_ts"] = (
+        lwod_df["start"].apply(convert_time).apply(pd.to_datetime, unit="s")
+    )
+    lwod_df["end_ts"] = (
+        lwod_df["end"].apply(convert_time).apply(pd.to_datetime, unit="s")
+    )
     for _, row in lwod_df.iterrows():
         if "AFK" in row.topic:
             add_axvspan(row, "lightcoral")
