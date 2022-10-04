@@ -44,7 +44,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Links to LWOD spreadsheets created by cantclosevim since September 2022.
 
 - [September 2022](https://docs.google.com/spreadsheets/d/1vkx2vxMiNkoqRXRfWrZJms_k7-toLWXxHIE2MJJPv5Y/edit?usp=sharing)
-
+- [October 2022](https://docs.google.com/spreadsheets/d/1BY2ICnELKlwXE5qbsaDtMyu0HMHPHEWdvz2c1GculYQ)
 
 
 
